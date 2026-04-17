@@ -49,7 +49,7 @@ export default function Contact() {
             </p>
             <div className="space-y-0">
               {[
-                { label: 'EMAIL',    value: 'krisharv.chaubey@gmail.com' },
+                { label: 'EMAIL',    value: 'connect@takumidelhi.com' },
                 { label: 'LOCATION',value: 'DBSE Office, IP Extension, Delhi' },
                 { label: 'FOLLOW',  value: '@takumidelhi' },
               ].map(({ label, value }) => (

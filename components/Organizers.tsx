@@ -5,13 +5,14 @@ import Image from "next/image";
 
 // 5 organizers — replace name/role/initials with real data
 const ORGANIZERS = [
-  { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '01' },
-  { name: 'Devpriya', role: 'Lead Organizer', image: '/images/devpriya.jpeg', initials: '02' },
-  { name: 'Kanishk', role: 'Organizer', image: '/images/kanishk.jpeg', initials: '03' },
-  { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '04' },
-  { name: 'Yash', role: 'Organizer', image: '/images/yash.jpeg', initials: '05' },
-  { name: 'Shorya', role: 'Organizer', image: '/images/shorya.jpeg', initials: '06' },
-  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '06' },
+  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '01' },
+  { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '02' },
+  { name: 'Devpriya', role: 'Lead Organizer', image: '/images/devpriya.jpeg', initials: '03' },
+  { name: 'Kanishk', role: 'Organizer', image: '/images/kanishk.jpeg', initials: '04' },
+  { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '05' },
+  { name: 'Yash', role: 'Organizer', image: '/images/yash.jpeg', initials: '06' },
+  { name: 'Shorya', role: 'Organizer', image: '/images/shorya.jpeg', initials: '07' },
+  
   
 ];
 function OrgCard({ org, i }: { org: any; i: number }) {

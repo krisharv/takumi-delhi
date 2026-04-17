@@ -11,7 +11,7 @@ const ORGANIZERS = [
   { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '04' },
   { name: 'Yash', role: 'Organizer', image: '/images/yash.jpeg', initials: '05' },
   { name: 'Shorya', role: 'Organizer', image: '/images/shorya.jpeg', initials: '06' },
-  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/ks_upadhyay.jpeg', initials: '06' },
+  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '06' },
   
 ];
 function OrgCard({ org, i }: { org: any; i: number }) {

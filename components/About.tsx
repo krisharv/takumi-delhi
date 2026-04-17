@@ -69,7 +69,7 @@ export default function About() {
                 ['THEME',      'Game Development — any genre, any mechanic'],
                 ['PHILOSOPHY', 'Precision over hype. Craft over spectacle'],
                 ['FORMAT',     'Two 12-hour sprints across May 2–3'],
-                ['SATELLITE',  'Official Hack Club satellite event'],
+                ['SATELLITE',  'Official DOE satallite hackathon event'],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-3 py-3 border-b border-ink/8">
                   <span className="sys-label w-24 shrink-0 pt-0.5">{k}</span>

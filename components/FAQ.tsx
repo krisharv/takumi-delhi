@@ -8,7 +8,7 @@ const FAQS = [
   { q: 'Does my team need prior game dev experience?', a: 'No. Even if you are a complete beginer its okay we will have workshops. You can use any engine or framework — Godot, Unity, Pygame, vanilla JS, GameMaker, or even a terminal-based game. Craft matters more than polish.' },
   { q: 'What tools and engines are allowed?', a: 'Any engine, framework, or language is allowed. You must build the game during the hackathon — pre-built codebases are not permitted. Assets from open-source or licensed packs are allowed with attribution.' },
   { q: 'Is there a registration fee?', a: 'No registration fee. This is a community event. Register at /submit and watch for a confirmation message.' },
-  { q: 'What should I bring?', a: 'Your laptop, charger, any peripherals you need, and your ID. Food will be provided during the event. Sleeping arrangements are your own responsibility.' },
+  { q: 'What should I bring?', a: 'Your laptop, charger, any peripherals you need, and your ID. Food will be provided during the event. ' },
   { q: 'How are projects judged?', a: 'Projects are judged on Gameplay (is it fun?), Craft (is it thoughtful?), and Originality (is it novel?). There is also a community voting round that contributes to the final score.' },
   { q: 'Is this a Hack Club event?', a: "No — Takumi Delhi is a official DOE Satellite Hackathon. It is independently organized but follows Hack Club's Code of Conduct and ethos." },
 ];

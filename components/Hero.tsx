@@ -52,7 +52,7 @@ const supabase = createClient(
     }
 
     // 2. Redirect to Google Form
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSfgPouIVPrU-h-9z0Ub2UchIS-UmurTTQbWvU64DvWCv9ijag/viewform", "_blank");
+    window.open("https://takumi.fillout.com/register", "_blank");
 
     // 3. Optional UI feedback
     setSubmitted(true);

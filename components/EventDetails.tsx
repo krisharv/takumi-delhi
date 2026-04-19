@@ -3,12 +3,12 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 const SPECS = [
-  { id: 'SPEC-01', label: 'Team Size',   value: '3 Members',     sub: 'Per team' },
+  { id: 'SPEC-01', label: 'Team Size',   value: '3 Members',     sub: 'Max' },
   { id: 'SPEC-02', label: 'Eligibility', value: 'Under 18',      sub: 'Age at event date' },
   { id: 'SPEC-03', label: 'Mode',        value: 'Offline',       sub: 'In-person only' },
   { id: 'SPEC-04', label: 'Venue',       value: 'DBSE Office',   sub: 'IP Extension, Delhi' },
   { id: 'SPEC-05', label: 'Duration',    value: '24 Hours',      sub: '12 + 12 hrs across 2 days' },
-  { id: 'SPEC-06', label: 'Theme',       value: 'Game Dev',      sub: 'Any genre, any engine' },
+  { id: 'SPEC-06', label: 'Theme',       value: 'Game Dev/Web Dev',      sub: 'Theme will be revealed on the spot.' },
 ];
 
 export default function EventDetails() {

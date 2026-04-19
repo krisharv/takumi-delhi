@@ -4,11 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@/lib/supabase';
 
+type Category = 'gamedev' | 'webdev';
+
 interface Team {
   id: string;
   name: string;
   project_title: string;
   project_description: string;
+  category: Category;
   submission_url?: string;
 }
 
@@ -20,6 +23,11 @@ function getVoterId(): string {
   if (!id) { id = uuidv4(); localStorage.setItem(VOTER_KEY, id); }
   return id;
 }
+
+const CATEGORIES: { key: Category; label: string; code: string }[] = [
+  { key: 'gamedev', label: 'Game Dev',  code: 'CAT-01' },
+  { key: 'webdev',  label: 'Web Dev',   code: 'CAT-02' },
+];
 
 function VoteCard({ team, index, voted, submitting, onVote }: {
   team: Team; index: number; voted: string | null; submitting: boolean; onVote: (id: string) => void;
@@ -66,7 +74,7 @@ function VoteCard({ team, index, voted, submitting, onVote }: {
           ) : (
             <div className="border border-red/40 p-3 bg-red/[0.03]">
               <div className="font-mono text-[9px] text-red tracking-widest mb-2">CONFIRM VOTE?</div>
-              <div className="font-syne text-xs text-ink/70 mb-3">This cannot be undone. One vote per participant.</div>
+              <div className="font-syne text-xs text-ink/70 mb-3">This cannot be undone. One vote per category.</div>
               <div className="flex gap-2">
                 <button onClick={() => onVote(team.id)} disabled={submitting}
                   className="flex-1 font-mono text-[9px] tracking-widest py-2 bg-red text-paper hover:bg-ink transition-colors disabled:opacity-50">
@@ -88,9 +96,11 @@ function VoteCard({ team, index, voted, submitting, onVote }: {
 export default function Voting() {
   const [votingOpen, setVotingOpen] = useState(false);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [voted, setVoted] = useState<string | null>(null);
+  // voted is per-category: { gamedev: teamId | null, webdev: teamId | null }
+  const [voted, setVoted] = useState<Record<Category, string | null>>({ gamedev: null, webdev: null });
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<Category>('gamedev');
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const supabase = createClient();
@@ -104,16 +114,25 @@ export default function Voting() {
 
       if (isOpen) {
         const { data: teamsData } = await supabase
-          .from('teams').select('id, name, project_title, project_description').order('name');
+          .from('teams').select('id, name, project_title, project_description, category').order('name');
         const { data: subs } = await supabase.from('submissions').select('team_id, submission_url');
         const subMap: Record<string, string> = {};
         (subs ?? []).forEach((s) => { subMap[s.team_id] = s.submission_url; });
         setTeams((teamsData ?? []).map((t) => ({ ...t, submission_url: subMap[t.id] })));
 
         const vid = getVoterId();
-        const { data: existingVote } = await supabase
-          .from('votes').select('team_id').eq('voter_id', vid).maybeSingle();
-        if (existingVote) setVoted(existingVote.team_id);
+        // Fetch votes for both categories
+        const { data: existingVotes } = await supabase
+          .from('votes').select('team_id, category').eq('voter_id', vid);
+        if (existingVotes) {
+          const voteMap: Record<Category, string | null> = { gamedev: null, webdev: null };
+          existingVotes.forEach((v) => {
+            if (v.category === 'gamedev' || v.category === 'webdev') {
+              voteMap[v.category as Category] = v.team_id;
+            }
+          });
+          setVoted(voteMap);
+        }
       }
       setLoading(false);
     };
@@ -129,17 +148,26 @@ export default function Voting() {
   }, []); // eslint-disable-line
 
   const handleVote = async (teamId: string) => {
-    if (voted || submitting) return;
+    if (voted[activeCategory] || submitting) return;
     setSubmitting(true);
     const vid = getVoterId();
-    const { error } = await supabase.from('votes').insert({ voter_id: vid, team_id: teamId });
-    if (!error) setVoted(teamId);
+    const { error } = await supabase.from('votes').insert({
+      voter_id: vid,
+      team_id: teamId,
+      category: activeCategory,
+    });
+    if (!error) setVoted((prev) => ({ ...prev, [activeCategory]: teamId }));
     setSubmitting(false);
   };
+
+  const visibleTeams = teams.filter((t) => t.category === activeCategory);
+  const currentVote = voted[activeCategory];
 
   return (
     <section id="voting" ref={ref} className="relative border-t border-ink/10 bg-ink/[0.018]">
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-24">
+
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
@@ -158,8 +186,37 @@ export default function Voting() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.15 }}
-          className="font-mono text-[9px] text-muted/50 tracking-widest mb-10">
-          // ONE VOTE PER PARTICIPANT // CANNOT BE CHANGED // RESULTS VISIBLE ON LEADERBOARD
+          className="font-mono text-[9px] text-muted/50 tracking-widest mb-8">
+          // ONE VOTE PER CATEGORY // CANNOT BE CHANGED // RESULTS ON LEADERBOARD
+        </motion.div>
+
+        {/* Category toggle tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="flex gap-0 mb-10 border border-ink/10 w-fit"
+        >
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.key;
+            const hasVoted = !!voted[cat.key];
+            return (
+              <button
+                key={cat.key}
+                onClick={() => setActiveCategory(cat.key)}
+                className={`relative px-6 py-3 font-mono text-[10px] tracking-widest transition-all duration-200 flex items-center gap-2 ${
+                  isActive
+                    ? 'bg-ink text-paper'
+                    : 'bg-transparent text-muted hover:text-ink'
+                }`}
+              >
+                <span className="text-[8px] opacity-50">{cat.code}</span>
+                {cat.label.toUpperCase()}
+                {hasVoted && (
+                  <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-red' : 'bg-red/60'}`} />
+                )}
+              </button>
+            );
+          })}
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -175,22 +232,34 @@ export default function Voting() {
               </div>
             </motion.div>
           ) : (
-            <motion.div key="open" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {voted && (
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+            >
+              {currentVote && (
                 <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
                   className="mb-8 border border-red/20 bg-red/[0.02] p-4 max-w-md">
                   <div className="font-mono text-[9px] tracking-widest text-red mb-1">VOTE REGISTERED</div>
                   <div className="font-syne text-sm text-ink">
-                    You voted for: <span className="font-bold">{teams.find((t) => t.id === voted)?.name ?? '—'}</span>
+                    You voted for: <span className="font-bold">{teams.find((t) => t.id === currentVote)?.name ?? '—'}</span>
                   </div>
                 </motion.div>
               )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {teams.map((team, i) => (
-                  <VoteCard key={team.id} team={team} index={i} voted={voted}
-                    submitting={submitting} onVote={handleVote} />
-                ))}
-              </div>
+
+              {visibleTeams.length === 0 ? (
+                <div className="font-mono text-xs text-muted/60 py-8 border border-ink/10 px-6">
+                  // NO {activeCategory === 'gamedev' ? 'GAME DEV' : 'WEB DEV'} TEAMS REGISTERED YET
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {visibleTeams.map((team, i) => (
+                    <VoteCard key={team.id} team={team} index={i} voted={currentVote}
+                      submitting={submitting} onVote={handleVote} />
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

@@ -8,6 +8,7 @@ const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: f
 
 /* ─── types ──────────────────────────────────── */
 interface Member { name: string; email: string; }
+type Category = 'gamedev' | 'webdev';
 
 type Phase =
   | 'loading'          // checking localStorage / Supabase
@@ -23,11 +24,23 @@ function getStoredTeamId() {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(TEAM_KEY);
 }
-
 function storeTeamId(id: string) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(TEAM_KEY, id);
 }
+
+const CATEGORY_META: Record<Category, { label: string; code: string; desc: string }> = {
+  gamedev: {
+    label: 'Game Dev',
+    code:  'CAT-01',
+    desc:  'Build a game — any genre, any engine. Godot, Unity, Pygame, JS, terminal. Craft matters.',
+  },
+  webdev: {
+    label: 'Web Dev',
+    code:  'CAT-02',
+    desc:  'Build a web project — app, tool, site, or experience. Any stack, deployed and accessible.',
+  },
+};
 
 /* ─── field helper ───────────────────────────── */
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
@@ -61,6 +74,38 @@ function Textarea({ value, onChange, placeholder = '...', rows = 3 }: {
   );
 }
 
+/* ─── CATEGORY SELECTOR ──────────────────────── */
+function CategorySelector({ value, onChange }: { value: Category; onChange: (c: Category) => void }) {
+  return (
+    <div>
+      <label className="sys-label block mb-3">CATEGORY</label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {(Object.entries(CATEGORY_META) as [Category, typeof CATEGORY_META[Category]][]).map(([key, meta]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onChange(key)}
+            className={`text-left p-4 border transition-all duration-200 relative ${
+              value === key
+                ? 'border-red bg-red/[0.04]'
+                : 'border-ink/15 hover:border-red/40 hover:bg-red/[0.02]'
+            }`}
+          >
+            {value === key && (
+              <span className="absolute top-2 right-2 font-mono text-[8px] tracking-widest text-red border border-red px-1.5 py-0.5">
+                ✓ SELECTED
+              </span>
+            )}
+            <div className="font-mono text-[8px] tracking-widest text-red/50 mb-1">{meta.code}</div>
+            <div className="font-syne font-bold text-ink text-base mb-1">{meta.label}</div>
+            <div className="font-mono text-[10px] text-muted leading-relaxed">{meta.desc}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ─── STATUS BADGE ────────────────────────────── */
 function StatusBar({ submissionsOpen }: { submissionsOpen: boolean }) {
   return (
@@ -84,14 +129,17 @@ function StatusBar({ submissionsOpen }: { submissionsOpen: boolean }) {
 }
 
 /* ─── PHASE: REGISTER ────────────────────────── */
-function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamName: string) => void }) {
+function RegisterForm({ onRegistered }: {
+  onRegistered: (teamId: string, teamName: string, category: Category) => void
+}) {
   const supabase = createClient();
-  const [teamName, setTeamName] = useState('');
-  const [members, setMembers] = useState<Member[]>([
+  const [teamName, setTeamName]   = useState('');
+  const [category, setCategory]   = useState<Category>('gamedev');
+  const [members, setMembers]     = useState<Member[]>([
     { name: '', email: '' }, { name: '', email: '' }, { name: '', email: '' },
   ]);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [status, setStatus]       = useState<'idle' | 'loading' | 'error'>('idle');
+  const [errorMsg, setErrorMsg]   = useState('');
 
   const setMember = (i: number, field: keyof Member, val: string) => {
     setMembers((m) => m.map((mm, idx) => idx === i ? { ...mm, [field]: val } : mm));
@@ -102,7 +150,6 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
     setStatus('loading');
     setErrorMsg('');
 
-    // Check duplicate team name
     const { data: existing } = await supabase
       .from('teams').select('id').eq('name', teamName.trim()).maybeSingle();
     if (existing) {
@@ -112,8 +159,9 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
     }
 
     const { data, error } = await supabase.from('teams').insert({
-      name: teamName.trim(),
-      members: members,
+      name:     teamName.trim(),
+      members:  members,
+      category: category,          // ← saved to Supabase
     }).select('id').single();
 
     if (error || !data) {
@@ -123,22 +171,22 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
     }
 
     storeTeamId(data.id);
-    onRegistered(data.id, teamName.trim());
+    onRegistered(data.id, teamName.trim(), category);
   };
 
-  /* retrieve existing team */
+  /* retrieve */
   const [retrieveName, setRetrieveName] = useState('');
-  const [retrieving, setRetrieving] = useState(false);
+  const [retrieving, setRetrieving]     = useState(false);
   const [showRetrieve, setShowRetrieve] = useState(false);
 
   const handleRetrieve = async (e: React.FormEvent) => {
     e.preventDefault();
     setRetrieving(true);
-    const { data } = await supabase.from('teams').select('id, name')
+    const { data } = await supabase.from('teams').select('id, name, category')
       .eq('name', retrieveName.trim()).maybeSingle();
     if (data) {
       storeTeamId(data.id);
-      onRegistered(data.id, data.name);
+      onRegistered(data.id, data.name, (data.category as Category) ?? 'gamedev');
     } else {
       alert('Team not found. Check your team name.');
     }
@@ -161,6 +209,9 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
             <Field label="TEAM NAME" hint="unique, max 40 chars">
               <Input value={teamName} onChange={setTeamName} placeholder="e.g. Pixel Ronin" />
             </Field>
+
+            {/* ── CATEGORY SELECTOR ── */}
+            <CategorySelector value={category} onChange={setCategory} />
 
             <div>
               <label className="sys-label block mb-3">TEAM MEMBERS (3 REQUIRED)</label>
@@ -201,22 +252,31 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
           <div className="border border-ink/10 p-6 mb-8">
             <div className="sys-label text-red mb-3">HOW IT WORKS</div>
             <div className="space-y-4 font-syne text-sm text-ink/70 leading-relaxed">
-              <div className="flex gap-3">
-                <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">01</span>
-                <p><strong className="text-ink">Register your team</strong> — Enter your team name and all 3 member details.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">02</span>
-                <p><strong className="text-ink">Wait for submissions to open</strong> — The admin toggles this during the hackathon.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">03</span>
-                <p><strong className="text-ink">Submit your project</strong> — Paste your itch.io/GitHub link, add a description and demo video.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">04</span>
-                <p><strong className="text-ink">Voting opens</strong> — Other participants vote for their favourite project. You can also vote on the main site.</p>
-              </div>
+              {[
+                ['Register your team', 'Enter your team name, pick your category, and fill in all 3 member details.'],
+                ['Wait for submissions to open', 'The admin toggles this during the hackathon.'],
+                ['Submit your project', 'Paste your link, add a description and demo video.'],
+                ['Voting opens', 'Other participants vote. Your project appears in the correct category leaderboard automatically.'],
+              ].map(([title, body], i) => (
+                <div key={i} className="flex gap-3">
+                  <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">{String(i+1).padStart(2,'0')}</span>
+                  <p><strong className="text-ink">{title}</strong> — {body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Category info box */}
+          <div className="border border-ink/10 p-5 mb-8 bg-ink/[0.015]">
+            <div className="sys-label text-red mb-3">SELECTED CATEGORY</div>
+            <div className="font-syne font-bold text-ink text-lg mb-1">
+              {CATEGORY_META[category].label}
+            </div>
+            <div className="font-mono text-[10px] text-muted leading-relaxed">
+              {CATEGORY_META[category].desc}
+            </div>
+            <div className="mt-3 font-mono text-[9px] text-muted/40 tracking-widest">
+              // CATEGORY CANNOT BE CHANGED AFTER REGISTRATION
             </div>
           </div>
 
@@ -256,16 +316,19 @@ function RegisterForm({ onRegistered }: { onRegistered: (teamId: string, teamNam
 }
 
 /* ─── PHASE: REGISTERED (submissions closed) ─── */
-function RegisteredWaiting({ teamName }: { teamName: string }) {
+function RegisteredWaiting({ teamName, category }: { teamName: string; category: Category }) {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="max-w-lg border border-ink/10 p-8">
       <div className="font-mono text-[10px] tracking-widest text-green-700 mb-3">✓ TEAM REGISTERED</div>
-      <div className="font-syne font-bold text-ink text-xl mb-2">{teamName}</div>
+      <div className="font-syne font-bold text-ink text-xl mb-1">{teamName}</div>
+      <div className="font-mono text-[9px] tracking-widest text-red border border-red/30 px-2 py-0.5 w-fit mb-4">
+        {CATEGORY_META[category].code} // {CATEGORY_META[category].label.toUpperCase()}
+      </div>
       <p className="font-syne text-sm text-ink/65 leading-relaxed mb-6">
-        Your team is registered. Submissions are not open yet — the organizer will open
-        them during the hackathon. Come back to this page when submissions open and you
-        will see the project submission form here.
+        Your team is registered under <strong>{CATEGORY_META[category].label}</strong>.
+        Submissions are not open yet — the organizer will open them during the hackathon.
+        Come back to this page when submissions open.
       </p>
       <div className="font-mono text-[9px] text-muted/50 tracking-widest">
         // BOOKMARK THIS PAGE // SUBMISSIONS OPEN IN REAL-TIME
@@ -275,8 +338,8 @@ function RegisteredWaiting({ teamName }: { teamName: string }) {
 }
 
 /* ─── PHASE: SUBMIT ──────────────────────────── */
-function SubmitForm({ teamId, teamName, onSubmitted }: {
-  teamId: string; teamName: string; onSubmitted: () => void;
+function SubmitForm({ teamId, teamName, category, onSubmitted }: {
+  teamId: string; teamName: string; category: Category; onSubmitted: () => void;
 }) {
   const supabase = createClient();
   const [form, setForm] = useState({
@@ -286,7 +349,7 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
     demoVideoUrl: '',
     notes: '',
   });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [status, setStatus]     = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -295,27 +358,23 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
     e.preventDefault();
     setStatus('loading');
 
-    // Update team with project info
     await supabase.from('teams').update({
-      project_title: form.projectTitle,
+      project_title:       form.projectTitle,
       project_description: form.projectDescription,
     }).eq('id', teamId);
 
-    // Upsert submission (allow resubmit)
     const { error } = await supabase.from('submissions').upsert({
-      team_id: teamId,
+      team_id:        teamId,
       submission_url: form.submissionUrl,
       demo_video_url: form.demoVideoUrl || null,
-      notes: form.notes || null,
+      notes:          form.notes || null,
     }, { onConflict: 'team_id' });
 
-    if (error) {
-      setErrorMsg(error.message);
-      setStatus('error');
-      return;
-    }
+    if (error) { setErrorMsg(error.message); setStatus('error'); return; }
     onSubmitted();
   };
+
+  const catMeta = CATEGORY_META[category];
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -326,11 +385,15 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
             <span className="font-mono text-[9px] text-green-700 tracking-widest border border-green-700 px-2 py-0.5">
               ✓ REGISTERED: {teamName}
             </span>
+            <span className="font-mono text-[9px] text-red tracking-widest border border-red/30 px-2 py-0.5">
+              {catMeta.code} // {catMeta.label.toUpperCase()}
+            </span>
           </div>
 
           <h2 className="font-syne font-bold text-2xl text-ink mb-2">Submit Your Project</h2>
           <p className="font-syne text-sm text-ink/60 leading-relaxed mb-8">
             You can resubmit until submissions close. Your latest submission overwrites the previous one.
+            This will appear in the <strong>{catMeta.label}</strong> leaderboard.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -340,12 +403,12 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
 
             <Field label="PROJECT DESCRIPTION" hint="shown to voters">
               <Textarea value={form.projectDescription} onChange={set('projectDescription')}
-                placeholder="What is your game about? What makes it interesting?" rows={4} />
+                placeholder={`What is your ${catMeta.label} project about? What makes it interesting?`} rows={4} />
             </Field>
 
-            <Field label="SUBMISSION URL" hint="itch.io, GitHub, or any public link">
+            <Field label="SUBMISSION URL" hint={category === 'gamedev' ? 'itch.io, GitHub, or any public link' : 'deployed URL or GitHub repo'}>
               <Input type="url" value={form.submissionUrl} onChange={set('submissionUrl')}
-                placeholder="https://itch.io/your-game" />
+                placeholder={category === 'gamedev' ? 'https://itch.io/your-game' : 'https://your-project.vercel.app'} />
             </Field>
 
             <Field label="DEMO VIDEO URL" hint="optional — YouTube, Drive, etc.">
@@ -373,28 +436,35 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
 
         {/* Right: tips */}
         <div className="md:pt-12">
+          <div className="border border-red/20 bg-red/[0.02] p-5 mb-8">
+            <div className="sys-label text-red mb-2">SUBMITTING AS</div>
+            <div className="font-syne font-bold text-ink text-lg">{catMeta.label}</div>
+            <div className="font-mono text-[10px] text-muted mt-1 leading-relaxed">{catMeta.desc}</div>
+            <div className="mt-3 font-mono text-[9px] text-muted/40 tracking-widest">
+              // THIS PROJECT WILL APPEAR IN THE {catMeta.label.toUpperCase()} LEADERBOARD
+            </div>
+          </div>
+
           <div className="sys-label mb-4 text-red">SUBMISSION CHECKLIST</div>
-          <div className="space-y-0 mb-10">
-            {[
+          <div className="space-y-0 mb-8">
+            {(category === 'gamedev' ? [
               'Game is playable from the submission URL',
               'Project was built during the hackathon (May 2–3)',
               'All team members are listed in registration',
               'Assets used are open-source or licensed',
               'Source code is included or linked',
-            ].map((item, i) => (
+            ] : [
+              'Project is accessible at the submitted URL',
+              'Project was built during the hackathon (May 2–3)',
+              'All team members are listed in registration',
+              'Packages / libraries used are open-source or licensed',
+              'Source code is included or linked',
+            ]).map((item, i) => (
               <div key={i} className="flex gap-3 py-3 border-b border-ink/8">
                 <span className="font-mono text-[9px] text-red/50 shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
                 <span className="font-syne text-sm text-ink/75">{item}</span>
               </div>
             ))}
-          </div>
-
-          <div className="border border-ink/10 p-5">
-            <div className="sys-label text-muted mb-2">ACCEPTED PLATFORMS</div>
-            <div className="font-syne text-sm text-ink/70 leading-relaxed">
-              itch.io, GitHub (with playable release or web build), Google Drive (with sharing enabled),
-              or any public URL where judges can access or download the game.
-            </div>
           </div>
         </div>
       </div>
@@ -403,16 +473,20 @@ function SubmitForm({ teamId, teamName, onSubmitted }: {
 }
 
 /* ─── PHASE: SUBMITTED ───────────────────────── */
-function SubmittedConfirm({ teamName, onResubmit }: { teamName: string; onResubmit: () => void }) {
+function SubmittedConfirm({ teamName, category, onResubmit }: {
+  teamName: string; category: Category; onResubmit: () => void;
+}) {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="max-w-lg">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-lg">
       <div className="border border-red/20 bg-red/[0.02] p-8 mb-6">
         <div className="font-mono text-[10px] tracking-widest text-red mb-3">PROJECT SUBMITTED</div>
-        <div className="font-syne font-bold text-ink text-xl mb-2">{teamName}</div>
+        <div className="font-syne font-bold text-ink text-xl mb-1">{teamName}</div>
+        <div className="font-mono text-[9px] tracking-widest text-red border border-red/30 px-2 py-0.5 w-fit mb-4">
+          {CATEGORY_META[category].code} // {CATEGORY_META[category].label.toUpperCase()}
+        </div>
         <p className="font-syne text-sm text-ink/65 leading-relaxed">
-          Your project has been submitted. It will appear in the leaderboard and voting section
-          after the organizer opens voting.
+          Your project has been submitted to the <strong>{CATEGORY_META[category].label}</strong> track.
+          It will appear in that leaderboard and voting section after the organizer opens voting.
         </p>
       </div>
       <button onClick={onResubmit}
@@ -426,43 +500,40 @@ function SubmittedConfirm({ teamName, onResubmit }: { teamName: string; onResubm
 /* ─── MAIN PAGE ──────────────────────────────── */
 export default function SubmitPage() {
   const supabase = createClient();
-  const [phase, setPhase] = useState<Phase>('loading');
-  const [teamId, setTeamId] = useState('');
-  const [teamName, setTeamName] = useState('');
+  const [phase, setPhase]                 = useState<Phase>('loading');
+  const [teamId, setTeamId]               = useState('');
+  const [teamName, setTeamName]           = useState('');
+  const [category, setCategory]           = useState<Category>('gamedev');
   const [submissionsOpen, setSubmissionsOpen] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      // Check submissions_open setting
       const { data: setting } = await supabase
         .from('settings').select('value').eq('key', 'submissions_open').single();
       const isOpen = setting?.value === true || setting?.value === 'true';
       setSubmissionsOpen(isOpen);
 
-      // Check localStorage for team
       const storedId = getStoredTeamId();
       if (!storedId) { setPhase('register'); return; }
 
       const { data: team } = await supabase
-        .from('teams').select('id, name').eq('id', storedId).maybeSingle();
+        .from('teams').select('id, name, category').eq('id', storedId).maybeSingle();
 
       if (!team) { setPhase('register'); return; }
 
       setTeamId(team.id);
       setTeamName(team.name);
+      setCategory((team.category as Category) ?? 'gamedev');
 
       if (!isOpen) { setPhase('registered'); return; }
 
-      // Check if already submitted
       const { data: sub } = await supabase
         .from('submissions').select('id').eq('team_id', team.id).maybeSingle();
-
       setPhase(sub ? 'submitted' : 'submit');
     };
 
     init();
 
-    // Real-time: watch submissions_open
     const ch = supabase.channel('submit-settings')
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'settings' }, (payload) => {
         if (payload.new.key === 'submissions_open') {
@@ -479,9 +550,10 @@ export default function SubmitPage() {
     return () => { supabase.removeChannel(ch); };
   }, []); // eslint-disable-line
 
-  const handleRegistered = (id: string, name: string) => {
+  const handleRegistered = (id: string, name: string, cat: Category) => {
     setTeamId(id);
     setTeamName(name);
+    setCategory(cat);
     setPhase(submissionsOpen ? 'submit' : 'registered');
   };
 
@@ -497,7 +569,7 @@ export default function SubmitPage() {
               TAKUMI<span className="text-red">.</span>
             </span>
             <span className="font-mono text-[9px] text-muted tracking-widest hidden sm:block">
-              DELHI // 2025
+              DELHI // 2026
             </span>
           </a>
           <div className="sys-label">TEAM PORTAL</div>
@@ -506,7 +578,6 @@ export default function SubmitPage() {
 
       {/* Main */}
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-16">
-        {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -525,7 +596,6 @@ export default function SubmitPage() {
 
         <StatusBar submissionsOpen={submissionsOpen} />
 
-        {/* Phase content */}
         <AnimatePresence mode="wait">
           {phase === 'loading' && (
             <div key="loading" className="font-mono text-xs text-muted py-8">
@@ -542,7 +612,7 @@ export default function SubmitPage() {
 
           {phase === 'registered' && (
             <motion.div key="registered" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <RegisteredWaiting teamName={teamName} />
+              <RegisteredWaiting teamName={teamName} category={category} />
             </motion.div>
           )}
 
@@ -551,6 +621,7 @@ export default function SubmitPage() {
               <SubmitForm
                 teamId={teamId}
                 teamName={teamName}
+                category={category}
                 onSubmitted={() => setPhase('submitted')}
               />
             </motion.div>
@@ -558,7 +629,7 @@ export default function SubmitPage() {
 
           {phase === 'submitted' && (
             <motion.div key="submitted" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <SubmittedConfirm teamName={teamName} onResubmit={() => setPhase('submit')} />
+              <SubmittedConfirm teamName={teamName} category={category} onResubmit={() => setPhase('submit')} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -568,7 +639,7 @@ export default function SubmitPage() {
       <div className="border-t border-ink/10 mt-20">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-6 flex items-center justify-between">
           <span className="font-mono text-[9px] text-muted/50 tracking-widest">
-            TAKUMI DELHI // MAY 2–3, 2025
+            TAKUMI DELHI // MAY 2–3, 2026
           </span>
           <a href="/" className="font-mono text-[9px] text-muted/50 hover:text-red transition-colors tracking-widest">
             ← BACK TO MAIN SITE

@@ -8,7 +8,7 @@ const DAY1 = [
   { time: '10:30', event: 'Hacking Begins — Day 1',   type: 'START',  note: 'Timer starts' },
   { time: '13:00', event: 'Lunch Break',               type: 'PAUSE',  note: '45 minutes' },
   { time: '17:00', event: 'Mid-day Check-in',          type: 'CHECK',  note: 'Mentor walkarounds' },
-  { time: '22:00', event: 'Day 1 Build Pause',         type: 'PAUSE',  note: 'Rest period begins' },
+  { time: '19:00', event: 'Day 1 Build Pause',         type: 'PAUSE',  note: 'Rest period begins' },
 ];
 
 const DAY2 = [

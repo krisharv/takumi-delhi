@@ -13,6 +13,8 @@ import Voting from '@/components/Voting';
 import FAQ from '@/components/FAQ';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import Sponsors from '@/components/Sponsors';
+
 
 const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
 
@@ -31,6 +33,7 @@ export default function Home() {
           <EventDetails />
           <Schedule />
           <Organizers />
+          <Sponsors /> 
           <Leaderboard />
           <Voting />
           <FAQ />

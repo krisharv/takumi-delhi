@@ -202,4 +202,4 @@ takumi-delhi/
 
 ---
 
-*Built for Takumi Delhi · Hack Club Satellite · 2025*
+*Built for Takumi Delhi · Hack Club Satellite · 2026*

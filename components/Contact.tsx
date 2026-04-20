@@ -49,9 +49,10 @@ export default function Contact() {
             </p>
             <div className="space-y-0">
               {[
-                { label: 'EMAIL',    value: 'connect@takumidelhi.com' },
+                { label: 'EMAIL',    value: 'admin@takumidelhi.com' },
                 { label: 'LOCATION',value: 'DBSE Office, IP Extension, Delhi' },
                 { label: 'FOLLOW',  value: '@takumidelhi' },
+                { label: 'CONTACT NO.',  value: '7088111060, 6396507377' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex gap-4 py-3 border-b border-ink/8">
                   <span className="sys-label w-20 shrink-0 pt-0.5">{label}</span>

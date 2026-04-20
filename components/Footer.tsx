@@ -58,8 +58,8 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div className="font-mono text-[10px] text-muted/50 tracking-widest space-y-1">
-            <div>© 2025 TAKUMI DELHI. ALL RIGHTS RESERVED.</div>
-            <div>A HACK CLUB SATELLITE HACKATHON.</div>
+            <div>© 2026 TAKUMI DELHI. ALL RIGHTS RESERVED.</div>
+            <div>A DOE OFFICIAL SATELLITE HACKATHON.</div>
           </div>
           <div className="font-mono text-[10px] text-muted/40 tracking-widest text-right space-y-1">
             <div>MAY 2–3, 2026</div>
@@ -70,7 +70,7 @@ export default function Footer() {
 
         {/* ASCII footer bar */}
         <div className="mt-10 font-mono text-[9px] text-ink/[0.06] tracking-widest text-center select-none hidden md:block">
-          ── ── ── TAKUMI-DL // CRAFT.CODE.CREATE // GAME DEV // SATELLITE // MAY-2025 ── ── ──
+          ── ── ── TAKUMI-DL // CRAFT.CODE.CREATE // GAME DEV // SATELLITE // MAY-2026 ── ── ──
         </div>
       </div>
     </footer>

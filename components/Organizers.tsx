@@ -5,14 +5,16 @@ import Image from "next/image";
 
 // 5 organizers — replace name/role/initials with real data
 const ORGANIZERS = [
-  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '01' },
-  { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '02' },
-  { name: 'Devpriya', role: 'Lead Organizer', image: '/images/devpriya.jpeg', initials: '03' },
-  { name: 'Kanishk', role: 'Organizer', image: '/images/kanishk.jpeg', initials: '04' },
-  { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '05' },
-  { name: 'Sukhdev', role: 'Organizer', image: '/images/Sukhdev.jpeg', initials: '06' },
-  { name: 'Shorya', role: 'Organizer', image: '/images/shorya.jpeg', initials: '07' },
-  { name: 'Aryan', role: 'Organizer', image: '/images/Aryan.jpeg', initials: '08' },
+  { name: 'Vedita Reddy', role: 'Director of DOE', image: '/images/Vedita.jpeg', initials: '01' },
+  { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '02' },
+  { name: 'Reena Maan', role: 'Lecturer Chemistry', image: '/images/Reena.jpeg', initials: '03' },
+  { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '04' },
+  { name: 'Devpriya', role: 'Lead Organizer', image: '/images/devpriya.jpeg', initials: '05' },
+  { name: 'Kanishk', role: 'Organizer', image: '/images/kanishk.jpeg', initials: '06' },
+  { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '07' },
+  { name: 'Sukhdev', role: 'Organizer', image: '/images/Sukhdev.jpeg', initials: '08' },
+  { name: 'Shorya', role: 'Organizer', image: '/images/shorya.jpeg', initials: '09' },
+  { name: 'Aryan', role: 'Organizer', image: '/images/Aryan.jpeg', initials: '10' },
   
   
 ];

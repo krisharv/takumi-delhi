@@ -3,10 +3,10 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 const SPECS = [
-  { id: 'SPEC-01', label: 'Team Size',   value: '3 Members',     sub: 'Max' },
-  { id: 'SPEC-02', label: 'Eligibility', value: 'Under 18',      sub: 'Age at event date' },
+  { id: 'SPEC-01', label: 'Team Size',   value: '3 Members',     sub: 'Min 2' },
+  { id: 'SPEC-02', label: 'Eligibility', value: '13 - 18',      sub: 'Age at event date' },
   { id: 'SPEC-03', label: 'Mode',        value: 'Offline',       sub: 'In-person only' },
-  { id: 'SPEC-04', label: 'Venue',       value: 'DBSE Office',   sub: 'IP Extension, Delhi' },
+  { id: 'SPEC-04', label: 'Venue',       value: 'Office of RDE East',   sub: 'IP Extension, Delhi' },
   { id: 'SPEC-05', label: 'Duration',    value: '24 Hours',      sub: '12 + 12 hrs across 2 days' },
   { id: 'SPEC-06', label: 'Theme',       value: 'Game Dev/Web Dev',      sub: 'Theme will be revealed on the spot.' },
 ];
@@ -50,7 +50,7 @@ export default function EventDetails() {
           transition={{ delay: 0.7, duration: 0.5 }}
           className="mt-6 font-mono text-[10px] text-muted/50 tracking-widest"
         >
-          // ALL SPECS SUBJECT TO CONFIRMATION — CHECK COMMUNICATION CHANNELS
+          
         </motion.div>
       </div>
     </section>

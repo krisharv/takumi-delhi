@@ -59,11 +59,11 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div className="font-mono text-[10px] text-muted/50 tracking-widest space-y-1">
             <div>© 2026 TAKUMI DELHI. ALL RIGHTS RESERVED.</div>
-            <div>A DOE OFFICIAL SATELLITE HACKATHON.</div>
+            <div>A CM Shri SATELLITE HACKATHON.</div>
           </div>
           <div className="font-mono text-[10px] text-muted/40 tracking-widest text-right space-y-1">
             <div>MAY 2–3, 2026</div>
-            <div>DBSE OFFICE // IP EXTENSION, DELHI</div>
+            <div>OFFICE OF RDE EAST // IP EXTENSION, DELHI</div>
             <div className="mt-1 text-[8px]">28°38′N 77°13′E // SYS v1.0.0</div>
           </div>
         </div>

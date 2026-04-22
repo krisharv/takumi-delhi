@@ -50,7 +50,7 @@ export default function Contact() {
             <div className="space-y-0">
               {[
                 { label: 'EMAIL',    value: 'admin@takumidelhi.com' },
-                { label: 'LOCATION',value: 'DBSE Office, IP Extension, Delhi' },
+                { label: 'LOCATION',value: 'Office of RDE East, IP Extension, Delhi' },
                 { label: 'FOLLOW',  value: '@takumidelhi' },
                 { label: 'CONTACT NO.',  value: '7088111060, 6396507377' },
               ].map(({ label, value }) => (

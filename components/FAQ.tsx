@@ -10,7 +10,7 @@ const FAQS = [
   { q: 'Is there a registration fee?', a: 'No registration fee. This is a community event. Register at /submit and watch for a confirmation message.' },
   { q: 'What should I bring?', a: 'Your laptop, charger, any peripherals you need, and your ID. Food will be provided during the event. ' },
   { q: 'How are projects judged?', a: 'Projects are judged on Gameplay (is it fun?), Craft (is it thoughtful?), and Originality (is it novel?). There is also a community voting round that contributes to the final score.' },
-  { q: 'Is this a Hack Club event?', a: "No — Takumi Delhi is a official DOE Satellite Hackathon. It is independently organized but follows Hack Club's Code of Conduct and ethos." },
+  { q: 'Is this a Hack Club event?', a: "No — Takumi Delhi is a CM Shri Satellite Hackathon. It is independently organized but follows Hack Club's Code of Conduct and ethos." },
 ];
 
 function FAQItem({ item, index }: { item: typeof FAQS[0]; index: number }) {

@@ -149,7 +149,7 @@ const supabase = createClient(
         >
           {[
             { label: 'DATE', value: 'MAY 2–3, 2026' },
-            { label: 'VENUE', value: 'DBSE OFFICE, IP EXT' },
+            { label: 'VENUE', value: 'Office Of RDE East, IP EXT' },
             { label: 'DURATION', value: '12 + 12 HRS' },
           ].map((m) => (
             <div key={m.label}>

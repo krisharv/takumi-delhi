@@ -9,7 +9,7 @@ const DAY1 = [
   { time: '13:00', event: 'Lunch Break',               type: 'PAUSE',  note: '45 minutes' },
   { time: '14:00', event: 'Hacking Continue',          type: 'CHECK',  note: 'Hardwork time' },
   { time: '17:00', event: 'Mid Day Check in',         type: 'PAUSE',  note: 'Mentor Walkthroughs' },
-  { time: '18:00', event: 'Dinner + Warp up',         type: 'PAUSE',  note: 'Time to go home' },
+  { time: '18:00 - 20:00', event: 'Dinner + Warp up',         type: 'PAUSE',  note: 'Time to go home' },
 ];
 
 const DAY2 = [
@@ -20,7 +20,8 @@ const DAY2 = [
   { time: '13:00', event: 'Lunch + Judging Prep',      type: 'PAUSE',  note: '' },
   { time: '14:00', event: 'Presentations & Demo',      type: 'SYSTEM', note: '2-3 min per team' },
   { time: '17:30', event: 'Voting By Students',      type: 'SYSTEM', note: 'Fair Voting' },
-  { time: '16:00', event: 'Results & Closing',         type: 'END',    note: 'Winners announced' },
+  { time: '18:00', event: 'Results & Closing',         type: 'ADMIN',    note: 'Winners announced' },
+  { time: '19:00 - 20:00', event: 'Closing Ceremony',         type: 'END',    note: 'Result' },
 ];
 
 const TYPE_COLOR: Record<string, string> = {

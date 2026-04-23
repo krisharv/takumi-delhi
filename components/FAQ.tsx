@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 const FAQS = [
   { q: 'Who can participate?', a: 'Anyone under 18 years old. This is an under-18 offline hackathon. You must attend in person at the DBSE Office, IP Extension, Delhi.' },
-  { q: 'What is the team size?', a: 'Teams of max 3 members. Solo or duo registrations will  be accepted. We encourage to form team at the event.' },
+  { q: 'What is the team size?', a: 'Teams of max 3 members. Solo registrations are not allowed but duo and team of three are allowed' },
   { q: 'Does my team need prior game dev experience?', a: 'No. Even if you are a complete beginer its okay we will have workshops. You can use any engine or framework — Godot, Unity, Pygame, vanilla JS, GameMaker, or even a terminal-based game. Craft matters more than polish.' },
   { q: 'What tools and engines are allowed?', a: 'Any engine, framework, or language is allowed. You must build the game during the hackathon — pre-built codebases are not permitted. Assets from open-source or licensed packs are allowed with attribution.' },
   { q: 'Is there a registration fee?', a: 'No registration fee. This is a community event. Register at /submit and watch for a confirmation message.' },

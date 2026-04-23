@@ -17,6 +17,7 @@ const ORGANIZERS = [
   { name: 'Aryan', role: 'Organizer', image: '/images/Aryan.jpeg', initials: '10' },
   
   
+  
 ];
 function OrgCard({ org, i }: { org: any; i: number }) {
   return (

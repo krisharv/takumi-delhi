@@ -15,6 +15,7 @@ const ORGANIZERS = [
   { name: 'Sukhdev', role: 'Organizer', image: '/images/Sukhdev.jpeg', initials: '08' },
   { name: 'Dhruv', role: 'Organizer', image: '/images/image.png', initials: '09' },
   { name: 'Aryan', role: 'Organizer', image: '/images/Aryan.jpeg', initials: '10' },
+  { name: 'Yash', role: 'Organizer', image: '/images/Yash.jpeg', initials: '11' },
   
   
   

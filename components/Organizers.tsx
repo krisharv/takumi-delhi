@@ -5,7 +5,7 @@ import Image from "next/image";
 
 // 5 organizers — replace name/role/initials with real data
 const ORGANIZERS = [
-  { name: 'Vedita Reddy', role: 'Director of DOE', image: '/images/Vedita.jpeg', initials: '01' },
+  { name: 'Vedita Reddy', role: 'Director of DOE', image: '/images/Vedita_1.jpeg', initials: '01' },
   { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '02' },
   { name: 'Reena Maan', role: 'Lecturer Chemistry', image: '/images/Reena.jpeg', initials: '03' },
   { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '04' },

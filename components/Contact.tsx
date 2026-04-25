@@ -52,7 +52,7 @@ export default function Contact() {
                 { label: 'EMAIL',    value: 'admin@takumidelhi.com' },
                 { label: 'LOCATION',value: 'Office of RDE East, IP Extension, Delhi' },
                 { label: 'FOLLOW',  value: '@takumidelhi' },
-                { label: 'CONTACT NO.',  value: '7088111060, 6396507377' },
+                { label: 'CONTACT NO.',  value: '6396507377' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex gap-4 py-3 border-b border-ink/8">
                   <span className="sys-label w-20 shrink-0 pt-0.5">{label}</span>

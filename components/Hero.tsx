@@ -171,8 +171,8 @@ export default function Hero() {
               &gt; Registrations Closed
             </span>
           </div>
-          <p className="font-mono text-xs text-ink/40 mt-2 tracking-wide">
-            Applications are no longer being accepted.
+          <p className="font-mono text-xs text-ink/60 mt-2 tracking-wide">
+            Teams who have successfully registered will receive an email at 12:00 AM containing their entry passes and relevant event details. Teams who do not receive this email may have submitted incorrect credentials or registration information.
           </p>
         </motion.div>
       </div>

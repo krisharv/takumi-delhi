@@ -31,10 +31,10 @@ export default function Hero() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { displayed: tagline, done: taglineDone } = useTypewriter('Craft. Code. Create.', 42, 800);
 
-  const supabase = createClient(
+const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -160,20 +160,36 @@ export default function Hero() {
         </motion.div>
 
         {/* Email signup */}
-        {/* Email signup */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="visible" custom={1.1}
           className="max-w-md"
         >
-          <div className="font-mono text-sm tracking-wide border border-red/40 px-4 py-3 flex items-center gap-3">
-            <span className="inline-block w-2 h-2 rounded-full bg-red animate-pulse" />
-            <span className="text-red tracking-widest uppercase">
-              &gt; Registrations Closed
-            </span>
-          </div>
-          <p className="font-mono text-xs text-ink/40 mt-2 tracking-wide">
-            Applications are no longer being accepted.
-          </p>
+          {submitted ? (
+            <div className="font-mono text-sm text-red tracking-wide border-b border-red pb-1">
+              &gt; REGISTERED. WE WILL REACH OUT.
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex items-end gap-3">
+              <div className="flex-1">
+                <label className="sys-label block mb-1">ENTER YOUR EMAIL</label>
+                <input
+                  ref={inputRef}
+                  className="terminal-input"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="font-mono text-xs tracking-widest px-4 py-2 bg-ink text-paper hover:bg-red transition-colors duration-200 whitespace-nowrap"
+              >
+                SIGN UP →
+              </button>
+            </form>
+          )}
         </motion.div>
       </div>
 

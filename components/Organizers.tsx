@@ -8,16 +8,16 @@ const ORGANIZERS = [
   { name: 'Vedita Reddy', role: 'Director of DOE', image: '/images/Vedita_1.jpeg', initials: '01' },
   { name: 'K.S. Upadhyay', role: 'Addl. Director of DOE', image: '/images/Ks_upadhyay.jpeg', initials: '02' },
   { name: 'Reena Maan', role: 'Lecturer Chemistry', image: '/images/Reena.jpeg', initials: '03' },
-  { name: 'Atharv Chaubey', role: 'Lead Organizer', image: '/images/atharv.jpeg', initials: '04' },
-  { name: 'Devpriya', role: 'Lead Organizer', image: '/images/devpriya.jpeg', initials: '05' },
+  { name: 'Atharv Chaubey', role: 'Organizer', image: '/images/atharv.jpeg', initials: '04' },
+  { name: 'Devpriya', role: 'Organizer', image: '/images/devpriya.jpeg', initials: '05' },
   { name: 'Kanishk', role: 'Organizer', image: '/images/kanishk.jpeg', initials: '06' },
   { name: 'Ansh', role: 'Organizer', image: '/images/ansh.jpeg', initials: '07' },
   { name: 'Sukhdev', role: 'Organizer', image: '/images/Sukhdev.jpeg', initials: '08' },
   { name: 'Dhruv', role: 'Organizer', image: '/images/image.png', initials: '09' },
   { name: 'Aryan', role: 'Organizer', image: '/images/Aryan.jpeg', initials: '10' },
   { name: 'Yash', role: 'Organizer', image: '/images/yash.jpeg', initials: '11' },
-  { name: 'Yugam Verma', role: 'Co-Organizer', image: '/images/Whising.jpeg', initials: '12' },
-  { name: 'Anay', role: 'Co-Organizer', image: '/images/Anay.jpeg', initials: '13' },
+  { name: 'Bhavesh', role: 'Organizer', image: '/images/Bhavesh.jpeg', initials: '12' },
+  
   
   
   

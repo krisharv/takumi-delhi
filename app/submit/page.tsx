@@ -32,13 +32,13 @@ function storeTeamId(id: string) {
 const CATEGORY_META: Record<Category, { label: string; code: string; desc: string }> = {
   gamedev: {
     label: 'Game Dev',
-    code:  'CAT-01',
-    desc:  'Build a game — any genre, any engine. Godot, Unity, Pygame, JS, terminal. Craft matters.',
+    code: 'CAT-01',
+    desc: 'Build a game — any genre, any engine. Godot, Unity, Pygame, JS, terminal. Craft matters.',
   },
   webdev: {
     label: 'Web Dev',
-    code:  'CAT-02',
-    desc:  'Build a web project — app, tool, site, or experience. Any stack, deployed and accessible.',
+    code: 'CAT-02',
+    desc: 'Build a web project — app, tool, site, or experience. Any stack, deployed and accessible.',
   },
 };
 
@@ -55,12 +55,12 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-function Input({ value, onChange, type = 'text', placeholder = '...' }: {
-  value: string; onChange: (v: string) => void; type?: string; placeholder?: string;
+function Input({ value, onChange, type = 'text', placeholder = '...', required = true }: {
+  value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean;
 }) {
   return (
     <input className="terminal-input" type={type} value={value}
-      onChange={(e) => onChange(e.target.value)} placeholder={placeholder} required />
+      onChange={(e) => onChange(e.target.value)} placeholder={placeholder} required={required} />
   );
 }
 
@@ -85,11 +85,10 @@ function CategorySelector({ value, onChange }: { value: Category; onChange: (c: 
             key={key}
             type="button"
             onClick={() => onChange(key)}
-            className={`text-left p-4 border transition-all duration-200 relative ${
-              value === key
-                ? 'border-red bg-red/[0.04]'
-                : 'border-ink/15 hover:border-red/40 hover:bg-red/[0.02]'
-            }`}
+            className={`text-left p-4 border transition-all duration-200 relative ${value === key
+              ? 'border-red bg-red/[0.04]'
+              : 'border-ink/15 hover:border-red/40 hover:bg-red/[0.02]'
+              }`}
           >
             {value === key && (
               <span className="absolute top-2 right-2 font-mono text-[8px] tracking-widest text-red border border-red px-1.5 py-0.5">
@@ -112,9 +111,8 @@ function StatusBar({ submissionsOpen }: { submissionsOpen: boolean }) {
     <div className="flex flex-wrap items-center gap-4 mb-12 pb-5 border-b border-ink/10">
       <div className="flex items-center gap-2">
         <span className="font-mono text-[9px] text-muted tracking-widest">SUBMISSIONS</span>
-        <span className={`font-mono text-[9px] tracking-widest border px-2 py-0.5 ${
-          submissionsOpen ? 'border-green-700 text-green-700' : 'border-red/60 text-red/60'
-        }`}>
+        <span className={`font-mono text-[9px] tracking-widest border px-2 py-0.5 ${submissionsOpen ? 'border-green-700 text-green-700' : 'border-red/60 text-red/60'
+          }`}>
           {submissionsOpen ? '● OPEN' : '● CLOSED'}
         </span>
       </div>
@@ -133,13 +131,13 @@ function RegisterForm({ onRegistered }: {
   onRegistered: (teamId: string, teamName: string, category: Category) => void
 }) {
   const supabase = createClient();
-  const [teamName, setTeamName]   = useState('');
-  const [category, setCategory]   = useState<Category>('gamedev');
-  const [members, setMembers]     = useState<Member[]>([
+  const [teamName, setTeamName] = useState('');
+  const [category, setCategory] = useState<Category>('gamedev');
+  const [members, setMembers] = useState<Member[]>([
     { name: '', email: '' }, { name: '', email: '' }, { name: '', email: '' },
   ]);
-  const [status, setStatus]       = useState<'idle' | 'loading' | 'error'>('idle');
-  const [errorMsg, setErrorMsg]   = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const setMember = (i: number, field: keyof Member, val: string) => {
     setMembers((m) => m.map((mm, idx) => idx === i ? { ...mm, [field]: val } : mm));
@@ -159,8 +157,8 @@ function RegisterForm({ onRegistered }: {
     }
 
     const { data, error } = await supabase.from('teams').insert({
-      name:     teamName.trim(),
-      members:  members,
+      name: teamName.trim(),
+      members: members,
       category: category,          // ← saved to Supabase
     }).select('id').single();
 
@@ -176,7 +174,7 @@ function RegisterForm({ onRegistered }: {
 
   /* retrieve */
   const [retrieveName, setRetrieveName] = useState('');
-  const [retrieving, setRetrieving]     = useState(false);
+  const [retrieving, setRetrieving] = useState(false);
   const [showRetrieve, setShowRetrieve] = useState(false);
 
   const handleRetrieve = async (e: React.FormEvent) => {
@@ -259,7 +257,7 @@ function RegisterForm({ onRegistered }: {
                 ['Voting opens', 'Other participants vote. Your project appears in the correct category leaderboard automatically.'],
               ].map(([title, body], i) => (
                 <div key={i} className="flex gap-3">
-                  <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">{String(i+1).padStart(2,'0')}</span>
+                  <span className="font-mono text-[9px] text-red/60 mt-0.5 shrink-0">{String(i + 1).padStart(2, '0')}</span>
                   <p><strong className="text-ink">{title}</strong> — {body}</p>
                 </div>
               ))}
@@ -349,7 +347,7 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
     demoVideoUrl: '',
     notes: '',
   });
-  const [status, setStatus]     = useState<'idle' | 'loading' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -359,15 +357,15 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
     setStatus('loading');
 
     await supabase.from('teams').update({
-      project_title:       form.projectTitle,
+      project_title: form.projectTitle,
       project_description: form.projectDescription,
     }).eq('id', teamId);
 
     const { error } = await supabase.from('submissions').upsert({
-      team_id:        teamId,
+      team_id: teamId,
       submission_url: form.submissionUrl,
       demo_video_url: form.demoVideoUrl || null,
-      notes:          form.notes || null,
+      notes: form.notes || null,
     }, { onConflict: 'team_id' });
 
     if (error) { setErrorMsg(error.message); setStatus('error'); return; }
@@ -413,7 +411,7 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
 
             <Field label="DEMO VIDEO URL" hint="optional — YouTube, Drive, etc.">
               <Input type="url" value={form.demoVideoUrl} onChange={set('demoVideoUrl')}
-                placeholder="https://youtube.com/..." />
+                placeholder="https://youtube.com/..." required={false} />
             </Field>
 
             <Field label="NOTES FOR JUDGES" hint="optional">
@@ -500,10 +498,10 @@ function SubmittedConfirm({ teamName, category, onResubmit }: {
 /* ─── MAIN PAGE ──────────────────────────────── */
 export default function SubmitPage() {
   const supabase = createClient();
-  const [phase, setPhase]                 = useState<Phase>('loading');
-  const [teamId, setTeamId]               = useState('');
-  const [teamName, setTeamName]           = useState('');
-  const [category, setCategory]           = useState<Category>('gamedev');
+  const [phase, setPhase] = useState<Phase>('loading');
+  const [teamId, setTeamId] = useState('');
+  const [teamName, setTeamName] = useState('');
+  const [category, setCategory] = useState<Category>('gamedev');
   const [submissionsOpen, setSubmissionsOpen] = useState(false);
 
   useEffect(() => {

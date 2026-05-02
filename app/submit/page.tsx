@@ -344,6 +344,7 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
     projectTitle: '',
     projectDescription: '',
     submissionUrl: '',
+    githubUrl: '',           // Add this line
     demoVideoUrl: '',
     notes: '',
   });
@@ -363,7 +364,9 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
 
     const { error } = await supabase.from('submissions').upsert({
       team_id: teamId,
+      team_name: teamName,
       submission_url: form.submissionUrl,
+      github_url: form.githubUrl,     // Remove the "|| null" to make it required
       demo_video_url: form.demoVideoUrl || null,
       notes: form.notes || null,
     }, { onConflict: 'team_id' });
@@ -407,6 +410,11 @@ function SubmitForm({ teamId, teamName, category, onSubmitted }: {
             <Field label="SUBMISSION URL" hint={category === 'gamedev' ? 'itch.io, GitHub, or any public link' : 'deployed URL or GitHub repo'}>
               <Input type="url" value={form.submissionUrl} onChange={set('submissionUrl')}
                 placeholder={category === 'gamedev' ? 'https://itch.io/your-game' : 'https://your-project.vercel.app'} />
+            </Field>
+
+            <Field label="GITHUB REPOSITORY" hint="required — source code link">
+              <Input type="url" value={form.githubUrl} onChange={set('githubUrl')}
+                placeholder="https://github.com/username/repo" />
             </Field>
 
             <Field label="DEMO VIDEO URL" hint="optional — YouTube, Drive, etc.">

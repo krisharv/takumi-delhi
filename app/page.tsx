@@ -33,8 +33,8 @@ export default function Home() {
           <Schedule />
           <Organizers />
           <Sponsors /> 
-          <Leaderboard />
-          <Voting />
+          
+          
           <FAQ />
           <Contact />
           <Footer />

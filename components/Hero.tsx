@@ -159,20 +159,19 @@ export default function Hero() {
           ))}
         </motion.div>
 
-        {/* Email signup */}
-        {/* Email signup */}
+        {/* Event status */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="visible" custom={1.1}
           className="max-w-md"
         >
           <div className="font-mono text-sm tracking-wide border border-red/40 px-4 py-3 flex items-center gap-3">
-            <span className="inline-block w-2 h-2 rounded-full bg-red animate-pulse" />
+            <span className="inline-block w-2 h-2 rounded-full bg-red" />
             <span className="text-red tracking-widest uppercase">
-              &gt; Registrations Closed
+              &gt; Event Has Ended
             </span>
           </div>
           <p className="font-mono text-xs text-ink/60 mt-2 tracking-wide">
-            Teams who have successfully registered will receive an email at 12:00 AM containing their entry passes and relevant event details. Teams who do not receive this email may have submitted incorrect credentials or registration information.
+            Thank you to all participants and attendees for making TAKUMI Delhi 2026 a success. See you next time soon!
           </p>
         </motion.div>
       </div>
